@@ -26,9 +26,6 @@ void setup(void) {
   tft.setCursor(10, 32);
   tft.setTextSize(3);
   tft.print("UV Index: ");
-  tft.setTextSize(4);
-  tft.setCursor(180, 28);
-  tft.println("10");       // Testing for now
   tft.setTextSize(3);
   tft.setCursor(0, 65);
   tft.println("  Vitamin D:");
@@ -41,6 +38,9 @@ void setup(void) {
 }
 
 void loop(){
-  int x = 1;
+  int uvReading = XX;
+  tft.setTextSize(4);
+  tft.setCursor(180, 28);
+  tft.println(String(uvReading));
   delay(1000);
 }
