@@ -11,7 +11,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'Home'>)
     <View style={styles.container}>
       <Text style={styles.header}>MyVitamin D {"\n"} Tracker</Text>
       <View style={styles.progressBar}></View>
-      <Text style={styles.UVIndex}>UV Index: 6.3</Text>
+      <Text style={styles.UVIndex}>UV Index: 69</Text>
       
       <StatusBar/>
     </View>
@@ -21,7 +21,6 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'Home'>)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#36A900',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -30,7 +29,6 @@ const styles = StyleSheet.create({
     fontSize: 50,
     textAlign: "center",
     fontWeight: 'bold',
-    color:"#fff",
     position: "absolute",
     top: '5%',
   },
@@ -45,7 +43,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: "center",
     fontWeight: 'bold',
-    color:"#000",
     //position: "absolute",
   },
 });
