@@ -5,9 +5,12 @@
 #define TFT_CS        10
 #define TFT_RST       9 // Or set to -1 and connect to Arduino RESET pin
 #define TFT_DC        8
+#define uvPin A7
 
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
+
 void setup(void) {
+  pinMode(uvPin, INPUT);
   Serial.begin(9600);
   Serial.print(F("Hello! ST77xx TFT Test"));
 
@@ -31,16 +34,40 @@ void setup(void) {
   tft.println("  Vitamin D:");
   tft.fillRect(10, 95, 220, 30, ST77XX_WHITE);
   tft.fillRect(11, 96, 110, 28, ST77XX_GREEN);  // 11, 96, 218, 28
-  tft.setCursor(90, 100);
-  tft.setTextColor(ST77XX_BLACK);
-  tft.println("100%");       // Testing for now
+  //tft.setCursor(90, 100);
+  //tft.setTextColor(ST77XX_BLACK);
+  //tft.println("100%");       // Testing for now
   delay(1000);
 }
 
 void loop(){
-  int uvReading = XX;
-  tft.setTextSize(4);
+  int uvReading = 0;
+  float avgReading = 8;
+  for (int i = 0; i < 10; i++) {    // does 30 conversions
+    uvReading = analogRead(uvPin);    // reads analog value
+    avgReading += float(uvReading);   // adds all conversion times together to solve for average later
+  }
+  avgReading = ((avgReading)/1023)*5;  // gets Vo from UV sensor
+  
+  
+  //Update UV reading
+  tft.fillRect(180, 28, 60, 30, ST77XX_BLACK);  // place black rectangle over old text to "delete" it
+  tft.setTextSize(3);
+  tft.setTextColor(ST77XX_WHITE);
   tft.setCursor(180, 28);
-  tft.println(String(uvReading));
+  //tft.println(String((int)avgReading));
+  tft.println(String(avgReading));
+
+  // Vitamin D Percentage
+  static int neededVitD = 20;
+  static float currVitD = 19;
+  if (currVitD >= neededVitD) currVitD = neededVitD;
+  static float vitDPercentage = (currVitD / neededVitD) * 100;
+  tft.setTextSize(3);
+  tft.setTextColor(ST77XX_BLACK);
+  tft.setCursor(90, 100);
+  if (vitDPercentage == 100) tft.println(String((int)vitDPercentage) + "%");
+  else tft.println(" " + String((int)vitDPercentage) + "%");
+  
   delay(1000);
 }
