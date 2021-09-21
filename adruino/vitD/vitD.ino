@@ -33,7 +33,7 @@ void setup(void) {
   tft.setCursor(0, 65);
   tft.println("  Vitamin D:");
   tft.fillRect(10, 95, 220, 30, ST77XX_WHITE);
-  tft.fillRect(11, 96, 110, 28, ST77XX_GREEN);  // 11, 96, 218, 28
+  //tft.fillRect(11, 96, 110, 28, ST77XX_GREEN);  // 11, 96, 218, 28
   //tft.setCursor(90, 100);
   //tft.setTextColor(ST77XX_BLACK);
   //tft.println("100%");       // Testing for now
@@ -49,7 +49,7 @@ void loop(){
   }
   /*Normally here you would divide avgReading (which is a measure of output voltage) by 10 but 
   because you need to multiply the voltage by 10 to convert it to UV Index, it just makes more sense to skip that step and not divide by 10*/
-  avgReading = ((avgReading)/1023)*5;  // gets Uv Index from UV sensor
+  avgReading = ((avgReading)/1023)*3.3;  // gets Uv Index from UV sensor
   
   
   //Update UV reading
@@ -61,15 +61,22 @@ void loop(){
   tft.println(String(avgReading));  // this is just for testing
 
   // Vitamin D Percentage
-  static int neededVitD = 20;
-  static float currVitD = 19;
+  static float neededVitD = 17;
+  static float currVitD = 0;
   if (currVitD >= neededVitD) currVitD = neededVitD;
-  static float vitDPercentage = (currVitD / neededVitD) * 100;
+  static float vitDPercentage = 0;
+  vitDPercentage = (currVitD / neededVitD) * 100;
+  int progressFill = (int)((vitDPercentage/100)*218);
+  //tft.fillRect(10, 95, 220, 30, ST77XX_WHITE);
+  tft.fillRect(11, 96, progressFill, 28, ST77XX_GREEN);  // max 11, 96, 218, 28
+  tft.fillRect(11+progressFill, 96, 218-progressFill, 28, ST77XX_WHITE);
   tft.setTextSize(3);
   tft.setTextColor(ST77XX_BLACK);
   tft.setCursor(90, 100);
   if (vitDPercentage == 100) tft.println(String((int)vitDPercentage) + "%");
   else tft.println(" " + String((int)vitDPercentage) + "%");
+  currVitD = currVitD + 1.0;  // test
+  if (currVitD == neededVitD + 1) currVitD = 0; // test
   
   delay(1000);
 }
