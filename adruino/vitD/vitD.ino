@@ -1,6 +1,7 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include <SPI.h>
+#include <ArduinoBLE.h>
 
 #define TFT_CS        10
 #define TFT_RST       9 // Or set to -1 and connect to Arduino RESET pin
@@ -58,7 +59,7 @@ void loop(){
   tft.setTextColor(ST77XX_WHITE);
   tft.setCursor(180, 28);
   //tft.println(String((int)avgReading));  // this will be used during normal use
-  tft.println(String(avgReading));  // this is just for testing
+  tft.println(String(avgReading, 1));  // this is just for testing
 
   // Vitamin D Percentage
   static float neededVitD = 17;
