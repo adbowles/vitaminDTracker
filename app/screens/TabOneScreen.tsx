@@ -1,20 +1,17 @@
-import { white } from 'color-name';
+import * as React from 'react';
+import { StyleSheet } from 'react-native';
+import {Pressable} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View , Pressable} from 'react-native';
+import EditScreenInfo from '../components/EditScreenInfo';
+import { Text, View } from '../components/Themed';
+import { RootTabScreenProps } from '../types';
 
-export default function App() {
+export default function TabOneScreen({ navigation }: RootTabScreenProps<'Home'>) {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>MyVitamin D {"\n"} Tracker</Text>
       <View style={styles.progressBar}></View>
-      <Text style={styles.UVIndex}>UV Index: 6.3</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>MyCalendar</Text>
-      </Pressable>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>MySettings</Text>
-      </Pressable>
+      <Text style={styles.UVIndex}>UV Index: 69</Text>
       
       <StatusBar/>
     </View>
@@ -24,7 +21,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#36A900',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -33,7 +29,6 @@ const styles = StyleSheet.create({
     fontSize: 50,
     textAlign: "center",
     fontWeight: 'bold',
-    color:"#fff",
     position: "absolute",
     top: '5%',
   },
@@ -48,21 +43,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: "center",
     fontWeight: 'bold',
-    color:"#000",
     //position: "absolute",
   },
-  button:{
-    textAlign:'center',
-    backgroundColor:"#fff",
-    width:"80%",
-    marginTop:30,
-    borderRadius: 20,
-    paddingTop:20,
-    paddingBottom:20
-    // height:'30%'
-  },
-  buttonText: {
-    textAlign:'center',
-    fontSize: 35,
-  }
 });
