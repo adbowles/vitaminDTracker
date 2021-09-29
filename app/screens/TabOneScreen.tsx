@@ -12,7 +12,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'Home'>)
       <Text style={styles.header}>MyVitamin D {"\n"} Tracker</Text>
       <View style={styles.progressBar}></View>
       <Text style={styles.progressBartext}>Vitamin D Progress:</Text>
-      <Text style={styles.UVIndex}>UV Index: 69</Text>
+      <Text style={styles.UVIndex}>UV Index: 6</Text>
       
       <StatusBar/>
     </View>
