@@ -19,12 +19,14 @@ import TabTwoScreen from '../screens/TabTwoScreen';
 import TabThreeScreen from '../screens/TabThreeScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import BluetScreen from '../screens/BluetScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      
       <RootNavigator />
     </NavigationContainer>
   );
@@ -39,10 +41,13 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false}} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'Modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} options = {{title: 'Information'}}/>
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen name="Information" component={ModalScreen} />
+      </Stack.Group>
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen name="Bluetooth" component={BluetScreen} />
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -68,10 +73,12 @@ function BottomTabNavigator() {
         component={TabOneScreen}
         options={({ navigation }: RootTabScreenProps<'Home'>) => ({
           title: 'Home',
+          //headerStyle: { backgroundColor: '#36A900',borderTopWidth:5, shadowColor: '0',},
+          headTintcolor: '#fff',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
             <Pressable
-              onPress={() => navigation.navigate('Modal')}
+              onPress={() => navigation.navigate('Information')}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
               })}>
@@ -83,22 +90,38 @@ function BottomTabNavigator() {
               />
             </Pressable>
           ),
+          headerLeft: () => (
+          <Pressable
+             onPress={() => navigation.navigate('Bluetooth')}
+             style={({ pressed }) => ({
+               opacity: pressed ? 0.5 : 1,
+             })}>
+             <FontAwesome
+               name="bluetooth"
+               size={25}
+               color={Colors[colorScheme].text}
+               style={{ marginLeft: 15 }}
+             />
+           </Pressable>
+          ),
         })}
       />
       <BottomTab.Screen
         name="Settings"
-        component={TabTwoScreen}
+        component={TabThreeScreen}
         options={{
-          title: 'Settings',
-          tabBarIcon: ({ color }) => <TabBarIcon name="gear" color={color} />,
+          title: 'Calendar',
+          headerShown:false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
         }}
       />
       <BottomTab.Screen
         name="Calendar"
-        component={TabThreeScreen}
+        component={TabTwoScreen}
         options={{
-          title: 'Calendar',
-          tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
+          title: 'Settings',
+          headerShown:false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="gear" color={color} />,
         }}
       />
     </BottomTab.Navigator>
