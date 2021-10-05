@@ -32,8 +32,9 @@ const linking: LinkingOptions<RootStackParamList> = {
           },
         },
       },
-      Modal: 'modal',
+      Information: 'modal',
       NotFound: '*',
+      Bluetooth: 'bluet',
     },
   },
 };
