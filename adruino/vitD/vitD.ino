@@ -6,14 +6,19 @@
 #define TFT_CS        10
 #define TFT_RST       9 // Or set to -1 and connect to Arduino RESET pin
 #define TFT_DC        8
-#define uvPin A7
+#define uvPin         A7
+#define lcdButton     6
+#define lcdPower      2
 
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 
 void setup(void) {
   pinMode(uvPin, INPUT);
+  pinMode(lcdButton, INPUT);
+  pinMode(lcdPower, OUTPUT);
+  digitalWrite(lcdPower, HIGH);
   Serial.begin(9600);
-  Serial.print(F("Hello! ST77xx TFT Test"));
+  //Serial.print(F("Hello! ST77xx TFT Test"));
 
   tft.init(135, 240);           // Init ST7789 240x135
   tft.setRotation(3);
@@ -42,14 +47,27 @@ void setup(void) {
 }
 
 void loop(){
+  static bool lcdFlag = 1;
+  if (digitalRead(lcdButton)==HIGH){ // if button is pressed
+    if (lcdFlag==0) {             // and the status flag is LOW
+      lcdFlag=1;                  // make status flag HIGH
+      digitalWrite(lcdPower,HIGH);     // and turn on the LED
+      }                           // 
+    else {                        // otherwise...
+      lcdFlag=0;                  // make status flag LOW
+      digitalWrite(lcdPower,LOW);      // and turn off the LED
+    }
+  }
+  
   int uvReading = 0;
   float avgReading = 0;
   for (int i = 0; i < 10; i++) {    // does 10 conversions
     uvReading = analogRead(uvPin);    // reads analog value
-    avgReading += float(uvReading);   // adds all conversion times together to solve for average later
+    avgReading += float(uvReading);   // adds all conversion times together
   }
   /*Normally here you would divide avgReading (which is a measure of output voltage) by 10 but 
-  because you need to multiply the voltage by 10 to convert it to UV Index, it just makes more sense to skip that step and not divide by 10*/
+  because you need to multiply the voltage by 10 to convert it to UV Index, it just makes more
+  sense to skip that step and not divide by 10*/
   avgReading = ((avgReading)/1023)*3.3;  // gets Uv Index from UV sensor
   
   
@@ -68,8 +86,7 @@ void loop(){
   static float vitDPercentage = 0;
   vitDPercentage = (currVitD / neededVitD) * 100;
   int progressFill = (int)((vitDPercentage/100)*218);
-  //tft.fillRect(10, 95, 220, 30, ST77XX_WHITE);
-  tft.fillRect(11, 96, progressFill, 28, ST77XX_GREEN);  // max 11, 96, 218, 28
+  tft.fillRect(11, 96, progressFill, 28, ST77XX_GREEN);
   tft.fillRect(11+progressFill, 96, 218-progressFill, 28, ST77XX_WHITE);
   tft.setTextSize(3);
   tft.setTextColor(ST77XX_BLACK);
