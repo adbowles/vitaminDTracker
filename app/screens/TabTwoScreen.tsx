@@ -12,7 +12,9 @@ export default function TabTwoScreen() {
   const [feet, setFeet] = React.useState(null);
   const [weight, setWeight] = React.useState(null);
   const [BMI, setBMI] = React.useState(null);
+  const [Gender, setGender] = React.useState(null);
 
+ 
   const inchChanger = (inches) => {
     if (inches > 11) inches = '11';
     setInches(inches);
@@ -68,10 +70,21 @@ export default function TabTwoScreen() {
           />
           <Text style={styles.inputLabel}>lbs</Text>
         </View>
+      
         <Text style={styles.BMILabel}>BMI: {BMI ? BMI.toFixed(2) : 0}</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Gender:</Text>
+          <Pressable style = {Gender == 'Male' ? styles.GenderIconactive: styles.GenderIcon} onPress={() => {setGender('Male');}}>
+            <Text style = {styles.GenderText}>M</Text>
+            </Pressable >
+            <Pressable style = {Gender == 'Female' ? styles.GenderIconactive: styles.GenderIcon} onPress = {() => {setGender('Female')}}>
+            <Text style = {styles.GenderText}>F</Text>
+            </Pressable >
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
+
 }
 
 const styles = StyleSheet.create({
@@ -115,7 +128,35 @@ const styles = StyleSheet.create({
     padding:5,
   },
   BMILabel: {
-    marginTop:30,
-    fontSize:20
+    marginTop:5,
+    fontSize:20,
+  },
+  GenderIcon: {
+    backgroundColor: '#BBBBBB',
+    display: 'flex',
+    margin: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15,
+    fontSize:20,
+    height: 50,
+    width: 50,
+    borderRadius: 30,
+  },
+  GenderText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+  GenderIconactive: {
+    backgroundColor: '#68FF00',
+    display: 'flex',
+    margin: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15,
+    fontSize:20,
+    height: 50,
+    width: 50,
+    borderRadius: 30,
   }
 });
