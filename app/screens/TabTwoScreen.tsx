@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
-
+import { backgroundColor } from '../src/style';
 
 export default function TabTwoScreen() {
   const [inches, setInches] = React.useState(null);
@@ -13,7 +13,7 @@ export default function TabTwoScreen() {
   const [weight, setWeight] = React.useState(null);
   const [BMI, setBMI] = React.useState(null);
   const [Gender, setGender] = React.useState(null);
-
+  const [SkinTone, setSkinTone] = React.useState('');
  
   const inchChanger = (inches) => {
     if (inches > 11) inches = '11';
@@ -35,7 +35,18 @@ export default function TabTwoScreen() {
       setBMI(thisBMI);
     }
   }
-
+  const renderSkinTones = () => {
+    const skinTones = [ '#ffdbac','#ffcba3','#c28155','#8d5524','#7B4B2A','#361e02'];
+    return skinTones.map( (value, index) => {
+        return (
+          <Pressable 
+            key={index}
+            style={SkinTone == value ? [styles.skinToneActive,{backgroundColor:value}] : [styles.skinTone,{backgroundColor:value}] }
+            onPress={() => {setSkinTone(value);}}>
+          </Pressable>
+        );
+      })
+  }
   return (
     <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss();calcBMI();}} accessible={false}>
       <View style={styles.container}>
@@ -80,6 +91,10 @@ export default function TabTwoScreen() {
             <Pressable style = {Gender == 'Female' ? styles.GenderIconactive: styles.GenderIcon} onPress = {() => {setGender('Female')}}>
             <Text style = {styles.GenderText}>F</Text>
             </Pressable >
+            </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Skin Tone:{"\n"}{"\n"}{"\n"}</Text>
+          {renderSkinTones()}  
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -158,5 +173,20 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     borderRadius: 30,
+  },
+  skinTone: {
+    left : '-90%',
+    width:45,
+    height:45,
+    margin:0,
+  },
+  skinToneActive: {
+    left : '-90%',
+    width:45,
+    height:45,
+    margin:0,
+    borderRadius:0,
+    borderWidth:3,
+    borderColor:"white",
   }
 });
