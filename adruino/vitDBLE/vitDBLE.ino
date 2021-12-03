@@ -12,8 +12,12 @@
 #define motor         16
 
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
-
-int data = 0;
+BLEService vitDService("180A"); // BLE Vitamin D Service
+BLEStringCharacteristic greetingCharacteristic("2A56", BLERead, 13);
+BLEFloatCharacteristic uvCharacteristic("2A57", BLEWrite);
+BLEFloatCharacteristic vitDCharacteristic("2A58", BLEWrite);
+BLEStringCharacteristic timeCharacteristic("2A59", BLEWrite, 13);
+static const char* greeting = "Hello";
 
 void setup(void) {
   pinMode(uvPin, INPUT);
@@ -23,7 +27,19 @@ void setup(void) {
   analogWrite(lcdPower, 255);
   digitalWrite(motor, 0);
   Serial.begin(9600);
-  //Serial.print(F("Hello! ST77xx TFT Test"));
+  //while (!Serial);
+  Serial.print(F("Hello! ST77xx TFT Test"));
+
+  BLE.setLocalName("Vitamin D Watch");  // Set name for connection
+  BLE.setAdvertisedService(vitDService); // Advertise service
+  vitDService.addCharacteristic(greetingCharacteristic); // Add characteristic to service
+  BLE.addService(vitDService); // Add service
+  greetingCharacteristic.setValue(greeting); // Set greeting string
+
+  BLE.advertise();  // Start advertising
+  Serial.print("Peripheral device MAC: ");
+  Serial.println(BLE.address());
+  Serial.println("Waiting for connections...");
 
   tft.init(135, 240);           // Init ST7789 240x135
   tft.setRotation(3);
@@ -51,11 +67,13 @@ void setup(void) {
   delay(1000);
 }
 
+
 void loop(){
+  //BLEDevice central = BLE.central();  // Wait for a BLE central to connect
   if (digitalRead(lcdButton)==HIGH) analogWrite(lcdPower,255);     // and turn on the LED
   else analogWrite(lcdPower,0);      // and turn off the LED
   digitalWrite(motor, 1);
-  delay(500);
+  //delay(500);
   digitalWrite(motor, 0);
   
   int uvReading = 0;
@@ -69,7 +87,7 @@ void loop(){
   sense to skip that step and not divide by 10*/
   avgReading = ((avgReading)/1023)*3.3;  // gets Uv Index from UV sensor
   
-  
+  if (lcdPower) {
   //Update UV reading
   tft.fillRect(180, 28, 60, 30, ST77XX_BLACK);  // place black rectangle over old text to "delete" it
   tft.setTextSize(3);
@@ -94,6 +112,7 @@ void loop(){
   else tft.println(" " + String((int)vitDPercentage) + "%");
   currVitD = currVitD + 1.0;  // test
   if (currVitD == neededVitD + 1) currVitD = 0; // test
+  }
   
   delay(1000);
 }
