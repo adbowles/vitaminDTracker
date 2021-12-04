@@ -2,6 +2,8 @@
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include <SPI.h>
 #include <ArduinoBLE.h>
+#include <EEPROM.h>
+#include <SimpleTimer.h>
 
 #define TFT_CS        10
 #define TFT_RST       9 // Or set to -1 and connect to Arduino RESET pin
@@ -14,9 +16,9 @@
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 BLEService vitDService("180A"); // BLE Vitamin D Service
 BLEStringCharacteristic greetingCharacteristic("2A56", BLERead, 13);
+BLEFloatCharacteristic vitDCharacteristic("2A58", BLERead);
+BLEStringCharacteristic timeCharacteristic("2A59", BLERead, 13);
 BLEFloatCharacteristic uvCharacteristic("2A57", BLEWrite);
-BLEFloatCharacteristic vitDCharacteristic("2A58", BLEWrite);
-BLEStringCharacteristic timeCharacteristic("2A59", BLEWrite, 13);
 static const char* greeting = "Hello";
 
 void setup(void) {
@@ -49,7 +51,7 @@ void setup(void) {
   tft.setTextWrap(false);
   tft.drawRect(190, 5, 40, 17, ST77XX_WHITE);
   tft.fillRect(230, 10, 3, 6, ST77XX_WHITE);
-  tft.fillRect(191, 6, 19, 15, ST77XX_GREEN); // 191 6 38 15
+  tft.fillRect(191, 6, 38, 15, ST77XX_GREEN); // 191 6 38 15
   tft.setCursor(2, 2);
   tft.setTextSize(2);
   tft.print("12:32");
@@ -72,9 +74,8 @@ void loop(){
   //BLEDevice central = BLE.central();  // Wait for a BLE central to connect
   if (digitalRead(lcdButton)==HIGH) analogWrite(lcdPower,255);     // and turn on the LED
   else analogWrite(lcdPower,0);      // and turn off the LED
-  digitalWrite(motor, 1);
-  //delay(500);
-  digitalWrite(motor, 0);
+  bool batteryLow = 0;
+  static bool vitDMet = 0;
   
   int uvReading = 0;
   float avgReading = 0;
@@ -111,8 +112,20 @@ void loop(){
   if (vitDPercentage == 100) tft.println(String((int)vitDPercentage) + "%");
   else tft.println(" " + String((int)vitDPercentage) + "%");
   currVitD = currVitD + 1.0;  // test
-  if (currVitD == neededVitD + 1) currVitD = 0; // test
+  if (currVitD == neededVitD + 1) {
+    currVitD = 0; // test
+    vitDMet = 1;
+  }
   }
   
-  delay(1000);
+  if (batteryLow || vitDMet) {
+    for (int i = 0; i < 3; i++) {
+      digitalWrite(motor, 1);
+      delay(500);
+      digitalWrite(motor, 0);
+      delay(500);
+    }
+    vitDMet = 0;
+  }
+  else delay(1000);
 }
