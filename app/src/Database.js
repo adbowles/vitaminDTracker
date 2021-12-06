@@ -56,23 +56,23 @@ export const updateSettingsBluTooth = async (data) => {
     // user weight is data.weight. Units are in pounds
     
     // user BMI is data.BMI
-
+    data.BMI = (data.weight/data.inches/data.inches) * 703
     // options for data.Gender are 'Male' or 'Female'
 
     /* user skintone is a value in the following array, assessible via data.SkinTone
-    [ '#ffdbac','#ffcba3','#c28155','#8d5524','#7B4B2A','#361e02'];
+    [ '#ffdbac','#ffcba3','#c28155','#8d5524','#7B4B2A','#361e02'];*/
 
-    One approach could be to create a map, such as:
+    //One approach could be to create a map, such as:
     const skinToneMap = {
-        '#ffdbac':modifier, // most fair
-        '#ffcba3':modifier, // fair
-        '#c28155':modifier, // middle fair
-        '#8d5524':modifier, // middle dark
-        '#7B4B2A':modifier, // dark
-        '#361e02':modifier, // most dark
+        '#ffdbac':3.2/2.4575, // most fair
+        '#ffcba3':3.2/3, // fair
+        '#c28155':3.2/4, // middle fair
+        '#8d5524':3.2/5.25, // middle dark
+        '#7B4B2A':3.2/7.5, // dark
+        '#361e02':3.2/42, // most dark
     };
 
-    where the appropriate modifier is accessed
+    /*where the appropriate modifier is accessed
     skinToneMap[data.SkinTone]
 
     */
