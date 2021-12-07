@@ -9,7 +9,7 @@ import { backgroundColor } from '../src/style';
 import { getData, storeData } from '../src/Database';
 
 export default class TabTwoScreen extends React.Component { 
-state = {inches:null, feet:null, weight:null, BMI:null, Gender:null, SkinTone:null, loaded:false}
+state = {inches:null, feet:null, weight:null, BMI:null, Gender:null, SkinTone:null, loaded:false, age:null}
 
 componentDidMount() {
   if (this.state.loaded) return;
@@ -23,7 +23,9 @@ componentDidMount() {
   })
 }
 
- 
+   ageChanger(age){
+      this.setState({age:age});
+    }
    inchChanger(inches){
     if (inches > 11) inches = '11';
     this.setState({inches:inches});
@@ -46,21 +48,39 @@ componentDidMount() {
   }
   renderSkinTones(){
     const skinTones = [ '#ffdbac','#ffcba3','#c28155','#8d5524','#7B4B2A','#361e02'];
-    return skinTones.map( (value, index) => {
-        return (
-          <Pressable 
-            key={index}
-            style={this.state.SkinTone == value ? [styles.skinToneActive,{backgroundColor:value}] : [styles.skinTone,{backgroundColor:value}] }
-            onPress={() => {this.setState({SkinTone:value});}}>
-          </Pressable>
-        );
-      })
+    return (
+      <View style={styles.inputContainer}>
+        {
+        skinTones.map( (value, index) => {
+          return (
+            <Pressable 
+              key={index}
+              style={this.state.SkinTone == value ? [styles.skinToneActive,{backgroundColor:value}] : [styles.skinTone,{backgroundColor:value}] }
+              onPress={() => {this.setState({SkinTone:value});}}>
+            </Pressable>
+            );
+          })
+        }
+      </View>
+      );
   }
   render () {
   return (
     <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss();this.calcBMI();}} accessible={false}>
       <View style={styles.container}>
         <Text style={styles.title}>Settings</Text>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Age:</Text>
+          <TextInput
+            onChangeText={this.ageChanger.bind(this)}
+            value={this.state.age}
+            keyboardType="numeric"
+            style={styles.input}
+            maxLength={2}
+          />
+        </View>
+      
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Height:</Text>
           <TextInput
@@ -102,8 +122,8 @@ componentDidMount() {
             <Text style = {styles.GenderText}>F</Text>
             </Pressable >
             </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Skin Tone:{"\n"}{"\n"}{"\n"}</Text>
+        <View style={styles.skinToneContainer}>
+          <Text style={styles.inputLabel}>Skin Tone:</Text>
           {this.renderSkinTones()}  
         </View>
         <Pressable onPress={() => {
@@ -111,7 +131,7 @@ componentDidMount() {
 
             // save to local storage
             storeData("settings", JSON.stringify(this.state));
-        }} style={{alignSelf:'center', backgroundColor:'grey', paddingHorizontal:10, paddingVertical:5, borderRadius:2,}}>
+        }} style={{alignSelf:'center', backgroundColor:'grey', paddingHorizontal:10, paddingVertical:2, borderRadius:2,}}>
           <Text style={{fontSize:32, fontWeight:'bold'}}>Save</Text>
         </Pressable>
 
@@ -131,8 +151,10 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     textAlign: "center",
-    position: "absolute",
-    top: '5%',
+    marginTop: '8%',
+    marginBottom: '8%',
+  // position: "absolute",
+  //  top: '5%',
   },
   inputContainer: {
     flexDirection:'row',
@@ -140,6 +162,9 @@ const styles = StyleSheet.create({
     alignItems:'center',
     alignSelf:"flex-start",
     marginLeft:'10%',
+  },
+  skinToneContainer: {
+    marginBottom:15,
   },
   inputLabel: {
     fontSize:30,
