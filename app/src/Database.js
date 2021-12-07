@@ -57,7 +57,10 @@ export const updateSettingsBluTooth = async (data) => {
     data.BMI = (data.weight/data.inches/data.inches) * 703
     let weightKg = data.weight / 2.205
     let heightCm = data.inches * 2.54
+    // Du Bois surface area formula
     let bodySurfaceArea = 0.007184 * Math.pow(weightKg, 0.425) * Math.pow(heightCm, 0.725)
+    // the constants here are just from taking the average person (5'9 191 lbs) 2.03 m2, setting that to 1,
+    // and scaling from there so 2.43 m2 / 2.03 m2 is 0.835391
     let surfaceAreaModifier = (-0.4115 * bodySurfaceArea) + 1.8354
     // options for data.Gender are 'Male' or 'Female'
     let genderModifier = 1
@@ -96,10 +99,12 @@ export const updateSettingsBluTooth = async (data) => {
         '#361e02':15/3, // most dark
     };
 
-    /* the first number here is the SED (standard erythemal dose) we want to hit.
-    we go with 0.25 because for someone with type II skin, they will produce
-    approximately 4900 IU of vitamin D per SED. This should produce roughly 1200 IU.*/
+    // changes vit D based on how much skin exposed. Naked person produces 4900 IU/SED
     let vitDPerSED = 4900 * exposedPercentage
+    /* the first number here is the SED (standard erythemal dose) we want to hit.
+        we go with 0.25 because for someone with type II skin, they will produce
+        approximately 4900 IU of vitamin D per SED. This should produce roughly 1200 IU.
+        Modifiers get added here to scale the number of SEDs needed*/
     let calculatedSED = 0.25 * skinToneMap[data.SkinTone] * (4900/vitDPerSED) * genderModifier * ageModifier
     let sEDPerMin = (0.0138 * uvIndex) + 0.0013
     let minutesNeeded = calculatedSED / sEDPerMin
