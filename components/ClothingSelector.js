@@ -128,6 +128,12 @@ export default class ClothingSelector extends React.Component {
                         <View style={{alignItems:'center', width:screenWidth, backgroundColor:'transparent'}}>
                             <Image source={require('../assets/images/longSleeveShirt.png')} />
                         </View>
+                        <View style={{alignItems:'center', width:screenWidth, backgroundColor:'transparent'}}>
+                            <Image source={require('../assets/images/bra.png')} />
+                        </View>
+                        <View style={{alignItems:'center', width:screenWidth, backgroundColor:'transparent'}}>
+                            <Image source={require('../assets/images/top.png')} />
+                        </View>
                     </ScrollView>
                 </View>
                 <View style={{ position:'absolute', width:screenWidth, backgroundColor:'transparent', top:180}}>
