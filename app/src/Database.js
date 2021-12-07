@@ -107,6 +107,8 @@ export const updateSettingsBluTooth = async (data) => {
         Modifiers get added here to scale the number of SEDs needed*/
     let calculatedSED = 0.25 * skinToneMap[data.SkinTone] * (4900/vitDPerSED) * genderModifier * ageModifier
     let sEDPerMin = (0.0138 * uvIndex) + 0.0013
+    // avoiding divide by 0 just in case. We shouldn't ever get negatives but we might get 0
+    if (sEDPerMin <= 0) sEDPerMin = 0.00001
     let minutesNeeded = calculatedSED / sEDPerMin
 
 }
