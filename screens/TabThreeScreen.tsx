@@ -1,11 +1,6 @@
-//import * as React from 'react';
-//import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import React, {Component} from 'react';
 import {Alert, Dimensions, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native';
-// @ts-expect-error
 import Carousel from 'react-native-snap-carousel'; // Version can be specified in package.json
 
 const SLIDER_WIDTH = Dimensions.get('window').width;

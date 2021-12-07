@@ -6,64 +6,74 @@ import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 import { backgroundColor } from '../src/style';
+import { getData, storeData } from '../src/Database';
 
-export default function TabTwoScreen() {
-  const [inches, setInches] = React.useState(null);
-  const [feet, setFeet] = React.useState(null);
-  const [weight, setWeight] = React.useState(null);
-  const [BMI, setBMI] = React.useState(null);
-  const [Gender, setGender] = React.useState(null);
-  const [SkinTone, setSkinTone] = React.useState('');
+export default class TabTwoScreen extends React.Component { 
+state = {inches:null, feet:null, weight:null, BMI:null, Gender:null, SkinTone:null, loaded:false}
+
+componentDidMount() {
+  if (this.state.loaded) return;
+
+  getData("settings").then((data) => {
+      this.setState({loaded:true});
+      if (!data) return;
+
+      data = JSON.parse(data);
+      this.setState(data);
+  })
+}
+
  
-  const inchChanger = (inches) => {
+   inchChanger(inches){
     if (inches > 11) inches = '11';
-    setInches(inches);
+    this.setState({inches:inches});
   }
-  const feetChanger = (feet) => {
+  feetChanger(feet){
     if (feet > 7) feet = '7';
-    setFeet(feet);
+    this.setState({feet:feet});
   }
-  const weightChanger = (weight) => {
-    setWeight(weight);
+  weightChanger (weight){
+    this.setState({weight:weight});
   }
-  const calcBMI = () => {
+  calcBMI(){
     // kg / m^2
     // ( lbs / in^2 )* 703
-    if (inches > 0 || feet > 0) {
-      let totalInches = parseInt(feet)*12 + parseInt(inches);
-      let thisBMI = (parseInt(weight) * 703) / (totalInches*totalInches);
-      setBMI(thisBMI);
+    if (this.state.inches > 0 || this.state.feet > 0) {
+      let totalInches = parseInt(this.state.feet)*12 + parseInt(this.state.inches);
+      let thisBMI = (parseInt(this.state.weight) * 703) / (totalInches*totalInches);
+      this.setState({BMI:thisBMI});
     }
   }
-  const renderSkinTones = () => {
+  renderSkinTones(){
     const skinTones = [ '#ffdbac','#ffcba3','#c28155','#8d5524','#7B4B2A','#361e02'];
     return skinTones.map( (value, index) => {
         return (
           <Pressable 
             key={index}
-            style={SkinTone == value ? [styles.skinToneActive,{backgroundColor:value}] : [styles.skinTone,{backgroundColor:value}] }
-            onPress={() => {setSkinTone(value);}}>
+            style={this.state.SkinTone == value ? [styles.skinToneActive,{backgroundColor:value}] : [styles.skinTone,{backgroundColor:value}] }
+            onPress={() => {this.setState({SkinTone:value});}}>
           </Pressable>
         );
       })
   }
+  render () {
   return (
-    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss();calcBMI();}} accessible={false}>
+    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss();this.calcBMI();}} accessible={false}>
       <View style={styles.container}>
         <Text style={styles.title}>Settings</Text>
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Height:</Text>
           <TextInput
-            onChangeText={feetChanger}
-            value={feet}
+            onChangeText={this.feetChanger.bind(this)}
+            value={this.state.feet}
             keyboardType="numeric"
             style={styles.inputSmall}
             maxLength={1}
           />
           <Text style={styles.inputLabel}>ft</Text>
           <TextInput
-            onChangeText={inchChanger}
-            value={inches}
+            onChangeText={this.inchChanger.bind(this)}
+            value={this.state.inches}
             keyboardType="numeric"
             style={styles.inputSmall}
             maxLength={2}
@@ -73,8 +83,8 @@ export default function TabTwoScreen() {
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Weight:</Text>
           <TextInput
-            onChangeText={weightChanger}
-            value={weight}
+            onChangeText={this.weightChanger.bind(this)}
+            value={this.state.weight}
             keyboardType="numeric"
             style={styles.input}
             maxLength={3}
@@ -82,24 +92,33 @@ export default function TabTwoScreen() {
           <Text style={styles.inputLabel}>lbs</Text>
         </View>
       
-        <Text style={styles.BMILabel}>BMI: {BMI ? BMI.toFixed(2) : 0}</Text>
+        <Text style={styles.BMILabel}>BMI: {this.state.BMI ? this.state.BMI.toFixed(2) : 0}</Text>
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Gender:</Text>
-          <Pressable style = {Gender == 'Male' ? styles.GenderIconactive: styles.GenderIcon} onPress={() => {setGender('Male');}}>
+          <Pressable style = {this.state.Gender == 'Male' ? styles.GenderIconactive: styles.GenderIcon} onPress={() => {this.setState({Gender:'Male'})}}>
             <Text style = {styles.GenderText}>M</Text>
             </Pressable >
-            <Pressable style = {Gender == 'Female' ? styles.GenderIconactive: styles.GenderIcon} onPress = {() => {setGender('Female')}}>
+            <Pressable style = {this.state.Gender == 'Female' ? styles.GenderIconactive: styles.GenderIcon} onPress = {() => {this.setState({Gender:'Female'})}}>
             <Text style = {styles.GenderText}>F</Text>
             </Pressable >
             </View>
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Skin Tone:{"\n"}{"\n"}{"\n"}</Text>
-          {renderSkinTones()}  
+          {this.renderSkinTones()}  
         </View>
+        <Pressable onPress={() => {
+            // send to blutooth
+
+            // save to local storage
+            storeData("settings", JSON.stringify(this.state));
+        }} style={{alignSelf:'center', backgroundColor:'grey', paddingHorizontal:10, paddingVertical:5, borderRadius:2,}}>
+          <Text style={{fontSize:32, fontWeight:'bold'}}>Save</Text>
+        </Pressable>
+
       </View>
     </TouchableWithoutFeedback>
   );
-
+  }
 }
 
 const styles = StyleSheet.create({

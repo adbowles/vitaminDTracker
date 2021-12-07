@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
   },
   ClothingSpace:{
     position: 'absolute',
-    bottom:'7%'
+    bottom:'15%'
   },
 });
