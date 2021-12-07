@@ -5,7 +5,6 @@ import { StatusBar } from 'expo-status-bar';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
-import ClothingSelector from '../components/ClothingSelector';
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'Home'>) {
   return (
@@ -14,7 +13,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'Home'>)
       <View style={styles.progressBar}></View>
       <Text style={styles.progressBartext}>Vitamin D Progress:</Text>
       <Text style={styles.UVIndex}>UV Index: 6</Text>
-      <ClothingSelector style={styles.ClothingSpace}/>
+      
       <StatusBar/>
     </View>
   );
@@ -60,9 +59,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     //position: "absolute",
     top: '-33%'
-  },
-  ClothingSpace:{
-    position: 'absolute',
-    bottom:'15%'
   },
 });
