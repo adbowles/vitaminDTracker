@@ -51,30 +51,57 @@ export const updateCoverageBluTooth = async (data) => {
 
 export const updateSettingsBluTooth = async (data) => {
 
-    // user height is available in data.feet and data.inches 
-
+    // user height is available in data.feet and data.inches
     // user weight is data.weight. Units are in pounds
-    
     // user BMI is data.BMI
     data.BMI = (data.weight/data.inches/data.inches) * 703
+    let weightKg = data.weight / 2.205
+    let heightCm = data.inches * 2.54
+    let bodySurfaceArea = 0.007184 * Math.pow(weightKg, 0.425) * Math.pow(heightCm, 0.725)
+    let surfaceAreaModifier = (-0.4115 * bodySurfaceArea) + 1.8354
     // options for data.Gender are 'Male' or 'Female'
-
+    let genderModifier = 1
+    if (data.Gender == 'Female')
+        genderModifier = 1.1
+    else genderModifier = 1
+    // user age modifier code
+    let ageModifier = 1
+    ageModifier = (0.025 * data.age) + 0.5
+    if (data.age < 20)
+        ageModifier = 1
     /* user skintone is a value in the following array, assessible via data.SkinTone
     [ '#ffdbac','#ffcba3','#c28155','#8d5524','#7B4B2A','#361e02'];*/
 
+    /* This was only if we were depending on location and seasons
+    let actionSpectrumConversionFactor = 0;
+    const date = new Date();
+    if (date.getMonth() >= 2 && date.getMonth() < 5)
+        actionSpectrumConversionFactor = 0.9745
+    else if (date.getMonth() >= 5 && date.getMonth() < 8)
+        actionSpectrumConversionFactor = 1.069
+    else if (date.getMonth() >= 8 && date.getMonth() < 11)
+        actionSpectrumConversionFactor = 0.954
+    else
+        actionSpectrumConversionFactor = 0.7035*/
+
+
+
     //One approach could be to create a map, such as:
     const skinToneMap = {
-        '#ffdbac':3.2/2.4575, // most fair
-        '#ffcba3':3.2/3, // fair
-        '#c28155':3.2/4, // middle fair
-        '#8d5524':3.2/5.25, // middle dark
-        '#7B4B2A':3.2/7.5, // dark
-        '#361e02':3.2/42, // most dark
+        '#ffdbac':2.5/3, // most fair
+        '#ffcba3':3/3, // fair
+        '#c28155':4/3, // middle fair
+        '#8d5524':5.25/3, // middle dark
+        '#7B4B2A':7.5/3, // dark
+        '#361e02':15/3, // most dark
     };
 
-    /*where the appropriate modifier is accessed
-    skinToneMap[data.SkinTone]
-
-    */
+    /* the first number here is the SED (standard erythemal dose) we want to hit.
+    we go with 0.25 because for someone with type II skin, they will produce
+    approximately 4900 IU of vitamin D per SED. This should produce roughly 1200 IU.*/
+    let vitDPerSED = 4900 * exposedPercentage
+    let calculatedSED = 0.25 * skinToneMap[data.SkinTone] * (4900/vitDPerSED) * genderModifier * ageModifier
+    let sEDPerMin = (0.0138 * uvIndex) + 0.0013
+    let minutesNeeded = calculatedSED / sEDPerMin
 
 }
