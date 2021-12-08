@@ -19,7 +19,6 @@ import TabTwoScreen from '../screens/TabTwoScreen';
 import TabThreeScreen from '../screens/TabThreeScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
-import BluetScreen from '../screens/BluetScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -45,9 +44,6 @@ function RootNavigator() {
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Information" component={ModalScreen} />
-      </Stack.Group>
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Bluetooth" component={BluetScreen} />
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -92,7 +88,6 @@ function BottomTabNavigator() {
           ),
           headerLeft: () => (
           <Pressable
-             onPress={() => navigation.navigate('Bluetooth')}
              style={({ pressed }) => ({
                opacity: pressed ? 0.5 : 1,
              })}>
