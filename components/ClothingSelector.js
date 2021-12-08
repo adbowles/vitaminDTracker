@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Text, View } from './Themed';
 import { Image, Dimensions, ScrollView, Pressable } from 'react-native';
-import { getData, storeData } from '../src/Database';
+import { getData, storeData, updateBodyCoverage } from '../src/Database';
  
 const screenWidth = Dimensions.get('window').width;
  
@@ -159,6 +159,7 @@ export default class ClothingSelector extends React.Component {
 
                         // save to local storage
                         storeData("clothing_items", JSON.stringify(this.state));
+                        updateBodyCoverage(this.state);
                     }} 
                     style={{alignSelf:'center', backgroundColor:'grey', paddingHorizontal:10, paddingVertical:2, borderRadius:2,marginTop:0}}><Text style={{fontSize:32, fontWeight:'bold'}}>Save</Text></Pressable>
                 </View>

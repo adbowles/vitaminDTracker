@@ -11,7 +11,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'Home'>)
   return (
     <View style={styles.container}>
       <Text style={styles.header}>MyVitamin D {"\n"} Tracker</Text>
-      <View style={styles.progressBar}></View>
+      <View style={styles.progressBar1}></View>
       <Text style={styles.progressBartext}>Vitamin D Progress:</Text>
       <Text style={styles.UVIndex}>UV Index: 6</Text>
       <ClothingSelector style={styles.ClothingSpace}/>
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     //position: "absolute",
   },
 
-  progressBar: {
+  progressBar1: {
     width:'80%',
     height:30,
     borderRadius: 20,

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleSheet, TouchableWithoutFeedback, Keyboard, TextInput } from 'react-native';
 import {Pressable} from 'react-native';
 import { Text, View } from '../components/Themed';
-import { getData, storeData } from '../src/Database';
+import { getData, storeData, updateSettings } from '../src/Database';
 
 export default class TabTwoScreen extends React.Component { 
 state = {inches:null, feet:null, weight:null, BMI:null, Gender:null, SkinTone:null, loaded:false, age:null}
@@ -127,6 +127,7 @@ componentDidMount() {
 
             // save to local storage
             storeData("settings", JSON.stringify(this.state));
+            updateSettings(this.state);
         }} style={{alignSelf:'center', backgroundColor:'grey', paddingHorizontal:10, paddingVertical:2, borderRadius:2,}}>
           <Text style={{fontSize:32, fontWeight:'bold'}}>Save</Text>
         </Pressable>
