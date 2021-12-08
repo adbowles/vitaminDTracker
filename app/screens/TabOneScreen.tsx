@@ -6,18 +6,43 @@ import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 import ClothingSelector from '../components/ClothingSelector';
+import {dailyInfo, StartTimer} from '../src/Database';
+import * as Progress from 'react-native-progress';
 
-export default function TabOneScreen({ navigation }: RootTabScreenProps<'Home'>) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>MyVitamin D {"\n"} Tracker</Text>
-      <View style={styles.progressBar}></View>
-      <Text style={styles.progressBartext}>Vitamin D Progress:</Text>
-      <Text style={styles.UVIndex}>UV Index: 6</Text>
-      <ClothingSelector style={styles.ClothingSpace}/>
-      <StatusBar/>
-    </View>
-  );
+export default class TabOneScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
+    this.test = {
+      mounted:false,
+      update:this.forceUpdate.bind(this)
+    }
+    this.state = {
+
+    };
+  }
+
+  componentDidMount() { 
+    this.test.mounted = true;
+  }
+  
+  componentWillUnmount() {
+    this.test.mounted = false;
+  }
+
+  render() {
+    StartTimer(this.test);
+    return (
+      <View style={styles.container}>
+        <Text style={styles.header}>MyVitamin D {"\n"} Tracker</Text>
+        <Progress.Bar progress={dailyInfo.percent} width={200} height={20} color={'white'}/>
+        <Text style={styles.progressBartext}>Vitamin D Progress:</Text>
+        <Text style={styles.UVIndex}>UV Index: {dailyInfo.uvIndex}</Text>
+        <ClothingSelector style={styles.ClothingSpace}/>
+        <StatusBar/>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -40,7 +65,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: "center",
     fontWeight: 'bold',
-    top:'-13%'
+    top:'-16%'
     //position: "absolute",
   },
 

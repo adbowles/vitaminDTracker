@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Text, View } from './Themed';
 import { Image, Dimensions, ScrollView, Pressable } from 'react-native';
-import { getData, storeData } from '../src/Database';
+import { getData, storeData, updateBodyCoverage } from '../src/Database';
+import LoadingModal from '../src/LoadingModal';
  
 const screenWidth = Dimensions.get('window').width;
  
@@ -23,7 +24,8 @@ export default class ClothingSelector extends React.Component {
         Tleg:0,
         Tfeet:0,
 
-        loaded:false
+        loaded:false,
+        isModalVisible:false,
     }
 
     componentDidMount() {
@@ -35,6 +37,7 @@ export default class ClothingSelector extends React.Component {
             if (!data) return;
 
             data = JSON.parse(data);
+            updateBodyCoverage(data);
             this.setState(data);
 
             for (const [key, index] of Object.entries(data)) {
@@ -151,11 +154,21 @@ export default class ClothingSelector extends React.Component {
                         // send to blutooth
 
 
+                        
+                        console.log("Here");
+                        updateBodyCoverage({...this.state});
+
                         // save to local storage
-                        storeData("clothing_items", JSON.stringify(this.state));
+                        this.setState({isModalVisible:true});
+                        // setTimeout( () =>
+                        let tempState = { ...this.state };
+                        tempState.isModalVisible = false;
+                        storeData("clothing_items", JSON.stringify(tempState))
+                            .then(() => this.setState({isModalVisible:false}));
                     }} 
-                    style={{alignSelf:'center', backgroundColor:'grey', paddingHorizontal:10, paddingVertical:5, borderRadius:2,marginTop:15}}><Text style={{fontSize:32, fontWeight:'bold'}}>Save</Text></Pressable>
+                    style={{alignSelf:'center', backgroundColor:'grey', paddingHorizontal:10, paddingVertical:0, borderRadius:2,marginTop:0}}><Text style={{fontSize:32, fontWeight:'bold'}}>Save</Text></Pressable>
                 </View>
+                <LoadingModal isVisible={this.state.isModalVisible} />
                 
             </View>
             );
