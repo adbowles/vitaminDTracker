@@ -160,7 +160,7 @@ export default class ClothingSelector extends React.Component {
                         // save to local storage
                         storeData("clothing_items", JSON.stringify(this.state));
                     }} 
-                    style={{alignSelf:'center', backgroundColor:'grey', paddingHorizontal:10, paddingVertical:5, borderRadius:2,marginTop:0}}><Text style={{fontSize:32, fontWeight:'bold'}}>Save</Text></Pressable>
+                    style={{alignSelf:'center', backgroundColor:'grey', paddingHorizontal:10, paddingVertical:2, borderRadius:2,marginTop:0}}><Text style={{fontSize:32, fontWeight:'bold'}}>Save</Text></Pressable>
                 </View>
                 
             </View>
