@@ -1,7 +1,7 @@
 #include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
+#include <Adafruit_ST7735.h> // Hardware-specific library for ST7789
 #include <SPI.h>
-#include <ArduinoBLE.h>
+//#include <ArduinoBLE.h>
 
 #define TFT_CS        10
 #define TFT_RST       9 // Or set to -1 and connect to Arduino RESET pin
@@ -11,13 +11,13 @@
 #define lcdPower      A0
 #define motor         16
 
-Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
-BLEService vitDService("180A"); // BLE Vitamin D Service
-BLEStringCharacteristic greetingCharacteristic("2A56", BLERead, 13);
-BLEFloatCharacteristic vitDCharacteristic("2A58", BLERead);
-BLEStringCharacteristic timeCharacteristic("2A59", BLERead, 13);
-BLEFloatCharacteristic uvCharacteristic("2A57", BLEWrite);
-static const char* greeting = "Hello";
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
+//BLEService vitDService("180A"); // BLE Vitamin D Service
+//BLEStringCharacteristic greetingCharacteristic("2A56", BLERead, 13);
+//BLEFloatCharacteristic vitDCharacteristic("2A58", BLERead);
+//BLEStringCharacteristic timeCharacteristic("2A59", BLERead, 13);
+//BLEFloatCharacteristic uvCharacteristic("2A57", BLEWrite);
+//static const char* greeting = "Hello";
 
 void setup(void) {
   pinMode(uvPin, INPUT);
@@ -30,36 +30,36 @@ void setup(void) {
   //while (!Serial);
   Serial.print(F("Hello! ST77xx TFT Test"));
 
-  BLE.setLocalName("Vitamin D Watch");  // Set name for connection
-  BLE.setAdvertisedService(vitDService); // Advertise service
-  vitDService.addCharacteristic(greetingCharacteristic); // Add characteristic to service
-  BLE.addService(vitDService); // Add service
-  greetingCharacteristic.setValue(greeting); // Set greeting string
+  //BLE.setLocalName("Vitamin D Watch");  // Set name for connection
+  //BLE.setAdvertisedService(vitDService); // Advertise service
+  //vitDService.addCharacteristic(greetingCharacteristic); // Add characteristic to service
+  //BLE.addService(vitDService); // Add service
+  //greetingCharacteristic.setValue(greeting); // Set greeting string
 
-  BLE.advertise();  // Start advertising
+  //BLE.advertise();  // Start advertising
   Serial.print("Peripheral device MAC: ");
-  Serial.println(BLE.address());
+  //Serial.println(BLE.address());
   Serial.println("Waiting for connections...");
 
-  tft.init(135, 240);           // Init ST7789 240x135
+  tft.initR(INITR_144GREENTAB);           // Init ST7789 240x135
   tft.setRotation(3);
 
   Serial.println(F("Initialized"));
   tft.fillScreen(ST77XX_BLACK);
   tft.setTextWrap(false);
-  tft.drawRect(190, 5, 40, 17, ST77XX_WHITE);
-  tft.fillRect(230, 10, 3, 6, ST77XX_WHITE);
-  tft.fillRect(191, 6, 38, 15, ST77XX_GREEN); // 191 6 38 15
-  tft.setCursor(2, 2);
-  tft.setTextSize(2);
-  tft.print("12:32");
-  tft.setCursor(10, 32);
-  tft.setTextSize(3);
-  tft.print("UV Index: ");
-  tft.setTextSize(3);
+  tft.drawRect(100, 5, 20, 17, ST77XX_WHITE);
+  tft.fillRect(120, 10, 3, 6, ST77XX_WHITE);
+  tft.fillRect(101, 6, 16, 15, ST77XX_GREEN); // 191 6 38 15
+  tft.setCursor(10, 5);
+  tft.setTextSize(2, 2);
+  tft.print("3:11");
+  tft.setCursor(10, 35);
+  tft.setTextSize(2, 2);
+  tft.print("UVI: ");
+  tft.setTextSize(2, 2);
   tft.setCursor(0, 65);
-  tft.println("  Vitamin D:");
-  tft.fillRect(10, 95, 220, 30, ST77XX_WHITE);
+  tft.println(" Vitamin D");
+  tft.fillRect(10, 95, 108, 30, ST77XX_WHITE);
   //tft.fillRect(11, 96, 110, 28, ST77XX_GREEN);  // 11, 96, 218, 28
   //tft.setCursor(90, 100);
   //tft.setTextColor(ST77XX_BLACK);
@@ -88,12 +88,12 @@ void loop(){
   
   if (lcdPower) {
   //Update UV reading
-  tft.fillRect(180, 28, 60, 30, ST77XX_BLACK);  // place black rectangle over old text to "delete" it
-  tft.setTextSize(3);
+  tft.fillRect(70, 28, 60, 30, ST77XX_BLACK);  // place black rectangle over old text to "delete" it
+  tft.setTextSize(2);
   tft.setTextColor(ST77XX_WHITE);
-  tft.setCursor(180, 28);
+  tft.setCursor(70, 35);
   //tft.println(String((int)avgReading));  // this will be used during normal use
-  tft.println(String(avgReading, 1));  // this is just for testing
+  tft.println(String(1.3, 1));  // this is just for testing
 
   // Vitamin D Percentage
   static float neededVitD = 17;
@@ -101,12 +101,12 @@ void loop(){
   if (currVitD >= neededVitD) currVitD = neededVitD;
   static float vitDPercentage = 0;
   vitDPercentage = (currVitD / neededVitD) * 100;
-  int progressFill = (int)((vitDPercentage/100)*218);
+  int progressFill = (int)((vitDPercentage/100)*106);
   tft.fillRect(11, 96, progressFill, 28, ST77XX_GREEN);
-  tft.fillRect(11+progressFill, 96, 218-progressFill, 28, ST77XX_WHITE);
-  tft.setTextSize(3);
+  tft.fillRect(11+progressFill, 96, 106-progressFill, 28, ST77XX_WHITE);
+  tft.setTextSize(2);
   tft.setTextColor(ST77XX_BLACK);
-  tft.setCursor(90, 100);
+  tft.setCursor(40, 103);
   if (vitDPercentage == 100) tft.println(String((int)vitDPercentage) + "%");
   else tft.println(" " + String((int)vitDPercentage) + "%");
   currVitD = currVitD + 1.0;  // test
